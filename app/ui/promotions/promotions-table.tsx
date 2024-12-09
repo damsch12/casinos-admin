@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { Promotion } from '@/app/lib/definitions';
 import Table from '../components/table';
 import TableActionsCell from '../components/table-actions-cell';
-import { DeleteIconButton } from '../components/icon-button';
+import { ActionButtonWithLoading } from '../components/icon-button';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import DynamicHeroIcon from '../dynamic-hero-icon';
 import clsx from 'clsx';
@@ -50,12 +50,12 @@ export default async function PromotionsTable({ data }: { data: any }) {
                 </td>
                 <TableActionsCell id={item.id} path="/welcome/promotions">
                   {!item.is_deleted && (
-                    <DeleteIconButton
+                    <ActionButtonWithLoading
                       id="deletePromotion"
-                      deleteAction={softDeletePromotion.bind(null, item.id)}
+                      action={softDeletePromotion.bind(null, item.id)}
                     >
                       <TrashIcon className="w-5" />
-                    </DeleteIconButton>
+                    </ActionButtonWithLoading>
                   )}
                 </TableActionsCell>
               </tr>

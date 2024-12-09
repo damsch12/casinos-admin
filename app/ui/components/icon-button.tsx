@@ -6,15 +6,15 @@ interface Props {
   id: string;
   text?: string;
   tooltip?: string;
-  deleteAction: any;
+  action: any;
   children: React.ReactNode;
 }
 
-export function DeleteIconButton({
+export function ActionButtonWithLoading({
   id,
   text,
   tooltip,
-  deleteAction,
+  action,
   children,
 }: Props) {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,9 +23,9 @@ export function DeleteIconButton({
     event.preventDefault();
     setIsLoading(true);
     try {
-      await deleteAction();
+      await action();
     } catch (error) {
-      console.error('Error during delete action:', error);
+      console.error('Error during action:', error);
     } finally {
       setIsLoading(false);
     }

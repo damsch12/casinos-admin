@@ -1,7 +1,7 @@
 import {Role } from '@/app/lib/definitions';
 import Table from '../components/table';
 import TableActionsCell from '../components/table-actions-cell';
-import { DeleteIconButton } from '../components/icon-button';
+import { ActionButtonWithLoading } from '../components/icon-button';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { disableRole } from '@/app/lib/actions/role-actions';
@@ -34,12 +34,12 @@ export default async function RolesTable({ data }: { data: any }) {
                 </td>
                 <TableActionsCell id={item.id} path="/welcome/roles">
                   {!item.disabled && (
-                    <DeleteIconButton
+                    <ActionButtonWithLoading
                       id="deleteRole"
-                      deleteAction={disableRole.bind(null, item.id)}
+                      action={disableRole.bind(null, item.id)}
                     >
                       <TrashIcon className="w-5" />
-                    </DeleteIconButton>
+                    </ActionButtonWithLoading>
                   )}
                 </TableActionsCell>
               </tr>

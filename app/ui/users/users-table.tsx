@@ -1,7 +1,7 @@
 import {SystemUser } from '@/app/lib/definitions';
 import Table from '../components/table';
 import TableActionsCell from '../components/table-actions-cell';
-import { DeleteIconButton } from '../components/icon-button';
+import { ActionButtonWithLoading } from '../components/icon-button';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { disableUser } from '@/app/lib/actions/user-actions';
@@ -49,12 +49,12 @@ export default async function UsersTable({ data }: { data: any }) {
                 </td>
                 <TableActionsCell id={item.id} path="/welcome/users">
                   {!item.disabled && (
-                    <DeleteIconButton
+                    <ActionButtonWithLoading
                       id="deleteUser"
-                      deleteAction={disableUser.bind(null, item.id)}
+                      action={disableUser.bind(null, item.id)}
                     >
                       <TrashIcon className="w-5" />
-                    </DeleteIconButton>
+                    </ActionButtonWithLoading>
                   )}
                 </TableActionsCell>
               </tr>
