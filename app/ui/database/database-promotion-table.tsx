@@ -57,6 +57,9 @@ export default async function DatabasePromotionsTable({ data }: { data: any }) {
                     <ActionButtonWithLoading
                       id="deletePromotion"
                       action={exportParticipantsToExcel.bind(null, item.id)}
+                      showDialogs={true}
+                      successMessage="Se envió correctamente el archivo a la dirección de correo"
+                      errorMessage="Error al enviar archivo"
                     >
                       <FileUpIcon className="w-6"></FileUpIcon>
                     </ActionButtonWithLoading>

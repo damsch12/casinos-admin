@@ -1,6 +1,15 @@
 'use client';
 import { useState } from 'react';
 import FullScreenLoading from './fullScreenLoading';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 interface Props {
   id: string;
@@ -8,6 +17,9 @@ interface Props {
   tooltip?: string;
   action: any;
   children: React.ReactNode;
+  showDialogs?: boolean;
+  successMessage?: string;
+  errorMessage?: string;
 }
 
 export function ActionButtonWithLoading({
@@ -16,15 +28,28 @@ export function ActionButtonWithLoading({
   tooltip,
   action,
   children,
+  showDialogs,
+  successMessage = 'Acción ejecutada con éxito',
+  errorMessage = 'Error al ejecutar la acción',
 }: Props) {
   const [isLoading, setIsLoading] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState<string | null>(null);
+  const [isErrorDialog, setIsErrorDialog] = useState(false);
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setIsLoading(true);
     try {
       await action();
+      if (showDialogs) {
+        setIsErrorDialog(false);
+        setDialogMessage(successMessage);
+      }
     } catch (error) {
+      if (showDialogs) {
+        setIsErrorDialog(true);
+        setDialogMessage(errorMessage);
+      }
       console.error('Error during action:', error);
     } finally {
       setIsLoading(false);
@@ -48,6 +73,29 @@ export function ActionButtonWithLoading({
           </div>
         )}
       </button>
+      <Dialog
+        open={!!dialogMessage}
+        onOpenChange={() => setDialogMessage(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle> {isErrorDialog ? 'Error' : 'Atención'}</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>{dialogMessage}</DialogDescription>
+          <DialogFooter>
+            <Button
+              className={
+                isErrorDialog
+                  ? 'bg-red-500 hover:bg-red-600'
+                  : 'bg-blue-500 hover:bg-blue-600'
+              }
+              onClick={() => setDialogMessage(null)}
+            >
+              Aceptar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </form>
   );
 }
