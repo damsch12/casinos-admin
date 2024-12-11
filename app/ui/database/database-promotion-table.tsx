@@ -2,11 +2,11 @@ import Image from 'next/image';
 import { Promotion } from '@/app/lib/definitions';
 import Table from '../components/table';
 import TableActionsCell from '../components/table-actions-cell';
-import { ActionButtonWithLoading } from '../components/icon-button';
 import DynamicHeroIcon from '../dynamic-hero-icon';
 import clsx from 'clsx';
-import { exportParticipantsToExcel } from '@/app/lib/actions/promotion-participants';
+import { exportParticipantsByPromotionToExcel } from '@/app/lib/actions/promotion-participants';
 import { FileUpIcon } from 'lucide-react';
+import { ExcelExportActionButton } from '../components/excel-export-action-button';
 
 export default async function DatabasePromotionsTable({ data }: { data: any }) {
   let counter = 0;
@@ -54,15 +54,14 @@ export default async function DatabasePromotionsTable({ data }: { data: any }) {
                   path="/welcome/promotions"
                 >
                   {!item.is_deleted && (
-                    <ActionButtonWithLoading
-                      id="deletePromotion"
-                      action={exportParticipantsToExcel.bind(null, item.id)}
+                    <ExcelExportActionButton
+                      id="exportParticipant"
+                      promotionId={item.id.toString()}
                       showDialogs={true}
-                      successMessage="Se envió correctamente el archivo a la dirección de correo"
-                      errorMessage="Error al enviar archivo"
+                      errorMessage="Error al generar el archivo"
                     >
                       <FileUpIcon className="w-6"></FileUpIcon>
-                    </ActionButtonWithLoading>
+                    </ExcelExportActionButton>
                   )}
                 </TableActionsCell>
               </tr>

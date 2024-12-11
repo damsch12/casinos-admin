@@ -16,6 +16,7 @@ interface Props {
   isMultipartForm?: boolean,
   addPremisePath?: boolean,
   addPremiseQuery?: boolean,
+  isBlobResponse?: boolean
 }
 
 export async function apiFetch({ method = 'GET', path = '/', query, body, isForm = false, isFileUpload = false, withAuth = true, addPremisePath = false, }: Props) {
@@ -42,7 +43,7 @@ export async function apiFetch({ method = 'GET', path = '/', query, body, isForm
   return response
 }
 
-export async function apiFetchServer({ method = 'GET', path = '/', query, body, isForm = false, isFileUpload = false, withAuth = true, addPremisePath = false, addPremiseQuery = false }: Props) {
+export async function apiFetchServer({ method = 'GET', path = '/', query, body, isForm = false, isFileUpload = false, withAuth = true, addPremisePath = false, addPremiseQuery = false, isBlobResponse = false, }: Props) {
   const cookieStore = await cookies();
 
   var axiosHeaders = new AxiosHeaders({
@@ -83,6 +84,7 @@ export async function apiFetchServer({ method = 'GET', path = '/', query, body, 
       method: method,
       headers: axiosHeaders,
       data: body,
+      ...(isBlobResponse ? { responseType: 'blob' } : {})
     });
 
     return response;
@@ -91,7 +93,7 @@ export async function apiFetchServer({ method = 'GET', path = '/', query, body, 
 
     if (error instanceof AxiosError) {
       if (error.response && error.response.data && error.response.data.detail) {
-        throw new Error(error.response.data.detail); 
+        throw new Error(error.response.data.detail);
       }
       throw error;
     }

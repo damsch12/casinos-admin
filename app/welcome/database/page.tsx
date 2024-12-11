@@ -4,13 +4,14 @@ import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { fetchFilteredData, getPagesAmount } from '@/app/lib/data/generic';
 import DatabasePromotionsTable from '@/app/ui/database/database-promotion-table';
+import ClientSideExcelFilters from '@/app/ui/components/client-side-excel-filters';
 
 export const metadata: Metadata = {
   title: 'Base de datos',
 };
 
 export default async function Page(props: {
-  searchParams?: Promise<{ 
+  searchParams?: Promise<{
     query?: string;
     page?: string;
   }>;
@@ -37,7 +38,9 @@ export default async function Page(props: {
         key={query + currentPage}
         fallback={<TableSkeleton titles={['Promoción']} />}
       >
-        <DatabasePromotionsTable data={data} />
+        <ClientSideExcelFilters>
+          <DatabasePromotionsTable data={data} />
+        </ClientSideExcelFilters>
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />

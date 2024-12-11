@@ -1,7 +1,7 @@
 import {Role } from '@/app/lib/definitions';
 import Table from '../components/table';
 import TableActionsCell from '../components/table-actions-cell';
-import { ActionButtonWithLoading } from '../components/icon-button';
+import { ActionButtonWithLoading } from '../components/action-button-with-loading';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { disableRole } from '@/app/lib/actions/role-actions';
