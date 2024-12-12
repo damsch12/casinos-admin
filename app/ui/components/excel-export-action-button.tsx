@@ -13,6 +13,8 @@ import { Button } from '@/components/ui/button';
 import { useDate } from './client-side-excel-filters';
 import { exportParticipantsByPromotionToExcel } from '@/app/lib/actions/promotion-participants';
 import { DateTime } from 'luxon';
+import { exportParticipantsToExcel } from '@/app/lib/actions/premise-actions';
+import { cn } from '@/lib/utils';
 
 interface Props {
   id: string;
@@ -23,6 +25,8 @@ interface Props {
   errorMessage?: string;
   promotionId?: string;
   premiseId?: string;
+  className?: string;
+  outlined?: boolean;
 }
 
 export function ExcelExportActionButton({
@@ -34,11 +38,13 @@ export function ExcelExportActionButton({
   errorMessage = 'Error al ejecutar la acción',
   promotionId,
   premiseId,
+  className,
+  outlined,
 }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [dialogMessage, setDialogMessage] = useState<string | null>(null);
   const [isErrorDialog, setIsErrorDialog] = useState(false);
-  const { selectedDate } = useDate();
+  const { startDate, endDate} = useDate();
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -49,8 +55,14 @@ export function ExcelExportActionButton({
       if (promotionId) {
         response = await exportParticipantsByPromotionToExcel(
           promotionId,
-          selectedDate,
+          startDate,
+          endDate,
         );
+      }else{
+        response = await exportParticipantsToExcel(
+          startDate,
+          endDate,
+        )
       }
       if (!response) {
         throw 'Error al exportar Excel';
@@ -72,7 +84,7 @@ export function ExcelExportActionButton({
     } catch (error) {
       if (showDialogs) {
         setIsErrorDialog(true);
-        
+
         const backendErrorMessage =
           error instanceof Error ? error.message : errorMessage;
         setDialogMessage(backendErrorMessage);
@@ -85,8 +97,9 @@ export function ExcelExportActionButton({
   return (
     <form className="inline-block">
       <FullScreenLoading isLoading={isLoading} />
-      <button
-        className="group relative rounded-md border p-2 hover:bg-gray-100"
+      <Button
+        className={cn("group relative rounded-md border p-2 ", className)}
+        variant={ outlined ?  'outline' : 'default'}
         name={`iconbtn_${id}`}
         id={`iconbtn_${id}`}
         onClick={handleClick}
@@ -98,7 +111,7 @@ export function ExcelExportActionButton({
             {tooltip}
           </div>
         )}
-      </button>
+      </Button>
       <Dialog
         open={!!dialogMessage}
         onOpenChange={() => setDialogMessage(null)}

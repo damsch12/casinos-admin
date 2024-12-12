@@ -109,11 +109,9 @@ export async function apiFetchServer({ method = 'GET', path = '/', query, body, 
       else if (responseData && responseData.detail) {
         throw new Error(responseData.detail);
       }
-
-      throw error; 
     }
 
-    throw new Error('Error inesperado');
+    throw new Error('Ha ocurrido un error inesperado');
   }
 }
 

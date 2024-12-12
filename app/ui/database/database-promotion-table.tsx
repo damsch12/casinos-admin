@@ -14,7 +14,7 @@ export default async function DatabasePromotionsTable({ data }: { data: any }) {
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          <Table titles={['Promociónes']}>
+          <Table titles={['Promociones']}>
             {data?.map((item: Promotion) => (
               <tr
                 key={`pro_${item.name.toString()}_${counter++}`}
@@ -55,6 +55,7 @@ export default async function DatabasePromotionsTable({ data }: { data: any }) {
                 >
                   {!item.is_deleted && (
                     <ExcelExportActionButton
+                      outlined
                       id="exportParticipant"
                       promotionId={item.id.toString()}
                       showDialogs={true}

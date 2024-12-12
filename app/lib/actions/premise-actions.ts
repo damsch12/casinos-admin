@@ -5,6 +5,8 @@ import { apiFetchServer } from "../api";
 import { Premise } from "../definitions";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { DateTime } from "luxon";
+import { cookies } from "next/headers";
 
 export type PremiseFormState = {
   errors?: {
@@ -100,5 +102,28 @@ export async function disablePremise(id: number) {
     return {
       message: 'Error al deshabilitar el local.',
     };
+  }
+}
+
+export async function exportParticipantsToExcel(startDate?: string, endDate?: string,) {
+  try {
+    const cookieStore = await cookies();
+    const query = new URLSearchParams();
+    let premiseId = cookieStore.get('selectedPremise')?.value;
+    if (!premiseId) {
+      throw 'Error al detectar el local.'
+    }
+    if (startDate) {
+      const startDateMontevideo = DateTime.fromISO(startDate, { zone: 'UTC' }).setZone('America/Montevideo').startOf('day');;
+      query.append('date_from', startDateMontevideo.toISO()!);
+    }
+    if (endDate) {
+      const endDateMontevideo = DateTime.fromISO(endDate, { zone: 'UTC' }).setZone('America/Montevideo').endOf('day');;
+      query.append('date_to', endDateMontevideo.toISO()!);
+    }
+    const response = await apiFetchServer({ method: 'GET', path: `premise/${premiseId}/export`, body: undefined, query: query, isExcel: true, });
+    return response.data;
+  } catch (error) {
+    throw error;
   }
 }

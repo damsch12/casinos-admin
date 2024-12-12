@@ -5,11 +5,11 @@ import { SessionProvider } from 'next-auth/react';
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const topNav = [
     // { name: 'Participantes', href: '/welcome/participants', iconName: 'UserGroupIcon' },
-    { name: 'Base de datos', href: '/welcome/database', iconName: 'CircleStackIcon' },
     { name: 'Promociones', href: '/welcome/promotions', iconName: 'TicketIcon' },
     { name: 'Locales', href: '/welcome/premises', iconName: 'BuildingStorefrontIcon' },
     { name: 'Usuarios', href: '/welcome/users', iconName: 'UserGroupIcon' },
     { name: 'Roles', href: '/welcome/roles', iconName: 'LockClosedIcon' },
+    { name: 'Base de datos', href: '/welcome/database', iconName: 'CircleStackIcon' },
   ]
 
   const bottomNav = [
