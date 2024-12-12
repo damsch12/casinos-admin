@@ -16,7 +16,7 @@ interface Props {
   isMultipartForm?: boolean,
   addPremisePath?: boolean,
   addPremiseQuery?: boolean,
-  isBlobResponse?: boolean
+  isExcel?: boolean
 }
 
 export async function apiFetch({ method = 'GET', path = '/', query, body, isForm = false, isFileUpload = false, withAuth = true, addPremisePath = false, }: Props) {
@@ -43,7 +43,7 @@ export async function apiFetch({ method = 'GET', path = '/', query, body, isForm
   return response
 }
 
-export async function apiFetchServer({ method = 'GET', path = '/', query, body, isForm = false, isFileUpload = false, withAuth = true, addPremisePath = false, addPremiseQuery = false, isBlobResponse = false, }: Props) {
+export async function apiFetchServer({ method = 'GET', path = '/', query, body, isForm = false, isFileUpload = false, withAuth = true, addPremisePath = false, addPremiseQuery = false, isExcel = false, }: Props) {
   const cookieStore = await cookies();
 
   var axiosHeaders = new AxiosHeaders({
@@ -84,20 +84,36 @@ export async function apiFetchServer({ method = 'GET', path = '/', query, body, 
       method: method,
       headers: axiosHeaders,
       data: body,
-      ...(isBlobResponse ? { responseType: 'blob' } : {})
+      ...(isExcel ? { responseType: 'arraybuffer' } : {})
     });
 
     return response;
 
   } catch (error) {
-
-    if (error instanceof AxiosError) {
-      if (error.response && error.response.data && error.response.data.detail) {
-        throw new Error(error.response.data.detail);
+    if (error instanceof AxiosError && error.response) {
+      const responseData = error.response.data;
+      if (responseData instanceof Uint8Array) {
+        try {
+          const decodedError = JSON.parse(new TextDecoder('utf-8').decode(responseData));
+          if (decodedError.detail) {
+            throw new Error(decodedError.detail);
+          }
+        } catch (parseError) {
+          const errorMessage =
+            parseError instanceof Error && parseError.message
+              ? parseError.message
+              : 'Ha ocurrido un error';
+          throw new Error(errorMessage);
+        }
       }
-      throw error;
+      else if (responseData && responseData.detail) {
+        throw new Error(responseData.detail);
+      }
+
+      throw error; 
     }
-    throw new Error('Error inesperado')
+
+    throw new Error('Error inesperado');
   }
 }
 

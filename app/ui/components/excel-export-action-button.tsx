@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useDate } from './client-side-excel-filters';
 import { exportParticipantsByPromotionToExcel } from '@/app/lib/actions/promotion-participants';
+import { DateTime } from 'luxon';
 
 interface Props {
   id: string;
@@ -51,20 +52,17 @@ export function ExcelExportActionButton({
           selectedDate,
         );
       }
-      if (response?.ok) {
+      if (!response) {
         throw 'Error al exportar Excel';
       }
-
-      // const blob = new Blob([response], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-      // Get the blob from the response
-      const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
-      // Create a blob URL
+      const blob = new Blob([response], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet ',
+      });
       const blobUrl = URL.createObjectURL(blob);
 
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = 'your-file-name.xlsx';
+      link.download = `listado_participantes_${DateTime.now().setZone('America/Montevideo').toFormat('yyyy-MM-dd_HH-mm-ss')}`;
 
       document.body.appendChild(link);
       link.click();
@@ -74,9 +72,11 @@ export function ExcelExportActionButton({
     } catch (error) {
       if (showDialogs) {
         setIsErrorDialog(true);
-        setDialogMessage(errorMessage);
+        
+        const backendErrorMessage =
+          error instanceof Error ? error.message : errorMessage;
+        setDialogMessage(backendErrorMessage);
       }
-      console.error('Error during action:', error);
     } finally {
       setIsLoading(false);
     }

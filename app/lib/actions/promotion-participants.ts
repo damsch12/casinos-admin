@@ -8,14 +8,12 @@ export async function exportParticipantsByPromotionToExcel(promotion_id: string,
 
         const query = new URLSearchParams();
         if (startDate) {
-            const startDateMontevideo = DateTime.fromISO(startDate, { zone: 'UTC' }).setZone('America/Montevideo');
-            query.append('date', startDateMontevideo.toISO()!);
+            const startDateMontevideo = DateTime.fromISO(startDate, { zone: 'UTC' }).setZone('America/Montevideo').startOf('day');;
+            query.append('date_from', startDateMontevideo.toISO()!);
         }
-        const response = await apiFetchServer({ method: 'GET', path: `promotion-participants/${promotion_id}/export`, body: undefined, query: query, isBlobResponse: true});
+        const response = await apiFetchServer({ method: 'GET', path: `promotion-participants/${promotion_id}/export`, body: undefined, query: query, isExcel: true });
         return response.data;
     } catch (error) {
-        return {
-            message: 'Error al exportar la promoción.',
-        };
+        throw error;
     }
 }
